@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Awais Haider — Shopify Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #111111;
+    --bg-card: #161616;
+    --bg-accent: #1a1a1a;
+    --text-primary: #f0ece4;
+    --text-secondary: #a09a8e;
+    --text-muted: #6b6560;
+    --accent: #c8a96e;
+    --accent-light: #dfc492;
+    --accent-dark: #a08545;
+    --accent-glow: rgba(200, 169, 110, 0.15);
+    --border: rgba(200, 169, 110, 0.12);
+    --border-strong: rgba(200, 169, 110, 0.25);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.7;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg-primary);
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  a:hover {
+    color: var(--accent-light);
+  }
+
+  /* ==================== HERO ==================== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 60px 40px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+    animation: heroGlow 8s ease-in-out infinite alternate;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(200, 169, 110, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+    animation: heroGlow 10s ease-in-out infinite alternate-reverse;
+  }
+
+  @keyframes heroGlow {
+    from { opacity: 0.5; transform: scale(1); }
+    to { opacity: 1; transform: scale(1.1); }
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-name span {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 50%, var(--accent-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-title {
+    font-family: var(--font-body);
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 300;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-contact {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .hero-contact a {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    transition: all 0.4s ease;
+  }
+
+  .hero-contact a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-glow);
+    transform: translateY(-2px);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1.2s;
+  }
+
+  .scroll-hint span {
+    display: block;
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    margin: 0 auto;
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ==================== LAYOUT ==================== */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  section {
+    padding: 100px 0;
+    position: relative;
+  }
+
+  .section-header {
+    margin-bottom: 60px;
+    position: relative;
+  }
+
+  .section-number {
+    font-family: var(--font-display);
+    font-size: 5rem;
+    font-weight: 800;
+    color: var(--bg-accent);
+    position: absolute;
+    top: -30px;
+    left: -10px;
+    line-height: 1;
+    z-index: 0;
+    user-select: none;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin-top: 16px;
+  }
+
+  .section-line {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 100px;
+  }
+
+  /* ==================== SUMMARY ==================== */
+  .summary-section {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    font-weight: 400;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    font-style: italic;
+    max-width: 850px;
+    position: relative;
+    padding-left: 30px;
+  }
+
+  .summary-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 3px;
+    height: calc(100% - 16px);
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  /* ==================== STATS ==================== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 60px;
+  }
+
+  .stat-card {
+    background: var(--bg-primary);
+    padding: 40px 30px;
+    text-align: center;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: var(--accent-glow);
+    transition: height 0.4s ease;
+  }
+
+  .stat-card:hover::before {
+    height: 100%;
+  }
+
+  .stat-number {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ==================== EXPERIENCE ==================== */
+  .exp-item {
+    position: relative;
+    padding: 50px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+    transition: all 0.4s ease;
+  }
+
+  .exp-item:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .exp-role {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .exp-dates {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+  }
+
+  .exp-company {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+  }
+
+  .exp-achievements {
+    display: grid;
+    gap: 16px;
+  }
+
+  .exp-achievement {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .exp-achievement::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .exp-achievement p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .exp-achievement strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ==================== SKILLS ==================== */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .skill-category {
+    padding: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  .skill-category:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+
+  .skill-category-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .skill-category-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .skill-tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .skill-tag:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  /* ==================== PROJECTS ==================== */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    position: relative;
+  }
+
+  .project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+  }
+
+  .project-card-inner {
+    padding: 40px;
+  }
+
+  .project-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: inline-block;
+  }
+
+  .project-name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .project-desc {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .project-tech span {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    padding: 4px 10px;
+    background: var(--bg-accent);
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .project-link:hover {
+    border-bottom-color: var(--accent);
+    gap: 14px;
+  }
+
+  .project-link svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.3s ease;
+  }
+
+  .project-card:hover .project-link svg {
+    transform: translateX(4px);
+  }
+
+  /* ==================== CERTIFICATIONS ==================== */
+  .cert-list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .cert-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .cert-item:hover {
+    border-color: var(--border-strong);
+    transform: translateX(5px);
+  }
+
+  .cert-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-glow);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--accent);
+    font-size: 1rem;
+  }
+
+  .cert-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .cert-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ==================== FOOTER ==================== */
+  .footer {
+    padding: 80px 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+
+  .footer-tagline {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+
+  .footer-tagline span {
+    color: var(--accent);
+  }
+
+  .footer-sub {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+  }
+
+  .footer-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--bg-primary);
+    background: linear-gradient(135deg, var(--accent-light), var(--accent), var(--accent-dark));
+    padding: 18px 40px;
+    border-radius: 0;
+    transition: all 0.4s ease;
+  }
+
+  .footer-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(200, 169, 110, 0.25);
+    color: var(--bg-primary);
+  }
+
+  .footer-bottom {
+    margin-top: 60px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+  }
+
+  /* ==================== ANIMATIONS ==================== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ==================== RESPONSIVE ==================== */
+  @media (max-width: 768px) {
+    .hero { padding: 40px 20px; }
+    .container { padding: 0 20px; }
+    section { padding: 70px 0; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .projects-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .exp-item { padding: 30px; }
+    .hero-contact { gap: 12px; }
+    .hero-contact a { font-size: 0.7rem; padding: 8px 14px; }
+    .exp-header { flex-direction: column; }
+    .section-number { font-size: 3.5rem; }
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .stat-card { padding: 25px 15px; }
+    .stat-number { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-label">Shopify Developer &middot; Front-End Developer</div>
+    <h1 class="hero-name">Awais <span>Haider</span></h1>
+    <p class="hero-title">Building high-converting Shopify stores with clean code and sharp design</p>
+    <div class="hero-contact">
+      <a href="mailto:awaishaiderkhan6@gmail.com">awaishaiderkhan6@gmail.com</a>
+      <a href="tel:+923212268695">+92 321 2268695</a>
+      <a href="#">Rawalpindi, Pakistan</a>
+    </div>
+  </div>
+  <div class="scroll-hint"><span></span></div>
+</section>
+
+<!-- ==================== SUMMARY ==================== -->
+<section class="summary-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">01</div>
+      <h2 class="section-title">About</h2>
+    </div>
+    <p class="summary-text reveal">
+      Shopify Developer with 1+ years of hands-on experience at Softerra — a Top Rated Plus agency on Upwork. Delivered fully functional Shopify stores across ecommerce and lifestyle verticals. Reduced average project build time by 30% through reusable section libraries. Maintains a zero-escalation client record across active delivery.
+    </p>
+    <div class="stats-grid reveal">
+
+      <div class="stat-card">
+        <div class="stat-number">30%</div>
+        <div class="stat-label">Faster Build Time</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Escalations in 24 Months</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EXPERIENCE ==================== -->
+<section>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">02</div>
+      <h2 class="section-title">Experience</h2>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-header">
+        <div class="exp-role">Shopify and WordPress Developer</div>
+        <div class="exp-dates">April 2023 — Present</div>
+      </div>
+      <div class="exp-company">Softerra (Top Rated Plus Shopify Agency on Upwork) &middot; Rawalpindi</div>
+      <div class="exp-achievements">
+        <div class="exp-achievement"><p>Architected and launched multiple <strong>Shopify stores</strong> using Liquid and Online Store 2.0 for clients in fashion and health and ecommerce. Delivered every project on schedule.</p></div>
+        <div class="exp-achievement"><p>Cut average project build time by <strong>30%</strong> by creating a reusable library of 15+ custom sections and dynamic blocks that clients manage independently.</p></div>
+        <div class="exp-achievement"><p>Configured metafields and metaobjects across <strong>8 stores</strong> to handle structured product data. Removed reliance on third-party apps and reduced monthly subscription fees for clients.</p></div>
+        <div class="exp-achievement"><p>Engineered custom JavaScript cart drawer functionality on 3 stores. Improved checkout flow and contributed to a <strong>12% measured reduction</strong> in cart abandonment.</p></div>
+        <div class="exp-achievement"><p>Diagnosed and resolved cross-browser and cross-device rendering defects on production stores within 24 hours. Maintained a <strong>zero-escalation record</strong> over 24 months.</p></div>
+        <div class="exp-achievement"><p>Set up Klaviyo email flows including welcome sequences and waitlist triggers and abandoned cart recovery across <strong>6 client stores</strong>.</p></div>
+        <div class="exp-achievement"><p>Conducted code reviews and QA testing on team deliverables before every client handoff. Caught an average of <strong>5 issues per review cycle</strong>.</p></div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-header">
+        <div class="exp-role">Front-End Developer Intern</div>
+        <div class="exp-dates">January 2023 — March 2023</div>
+      </div>
+      <div class="exp-company">Softerra &middot; Rawalpindi</div>
+      <div class="exp-achievements">
+        <div class="exp-achievement"><p>Contributed to <strong>5 live client</strong> Shopify and WordPress projects from day one under senior developer mentorship.</p></div>
+        <div class="exp-achievement"><p>Executed <strong>15+ UI customization tasks</strong> including section layout adjustments and CSS corrections and responsive improvements across multiple store themes.</p></div>
+        <div class="exp-achievement"><p>Applied Shopify Liquid templating and dynamic content rendering and Online Store 2.0 architecture in production within the <strong>first 8 weeks</strong>.</p></div>
+        <div class="exp-achievement"><p>Identified and documented <strong>10+ bugs</strong> during QA testing cycles before client delivery. Reduced post-launch fix requests.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SKILLS ==================== -->
+<section class="summary-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">03</div>
+      <h2 class="section-title">Skills</h2>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-category reveal">
+        <div class="skill-category-icon">⬡</div>
+        <div class="skill-category-name">Shopify</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Liquid</span>
+          <span class="skill-tag">Online Store 2.0</span>
+          <span class="skill-tag">Metafields</span>
+          <span class="skill-tag">Metaobjects</span>
+          <span class="skill-tag">Custom Sections</span>
+          <span class="skill-tag">Dynamic Blocks</span>
+          <span class="skill-tag">Theme Development</span>
+          <span class="skill-tag">Cart Drawer</span>
+          <span class="skill-tag">Section Rendering API</span>
+          <span class="skill-tag">JSON Templates</span>
+          <span class="skill-tag">Shopify CLI</span>
+        </div>
+      </div>
+
+      <div class="skill-category reveal">
+        <div class="skill-category-icon">◈</div>
+        <div class="skill-category-name">Front-End</div>
+        <div class="skill-tags">
+          <span class="skill-tag">HTML5</span>
+          <span class="skill-tag">CSS3</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">ES6+</span>
+          <span class="skill-tag">Responsive Design</span>
+          <span class="skill-tag">CSS Flexbox</span>
+          <span class="skill-tag">CSS Grid</span>
+          <span class="skill-tag">AJAX</span>
+          <span class="skill-tag">Fetch API</span>
+          <span class="skill-tag">DOM Manipulation</span>
+          <span class="skill-tag">WCAG Accessibility</span>
+          <span class="skill-tag">CRO</span>
+        </div>
+      </div>
+
+      <div class="skill-category reveal">
+        <div class="skill-category-icon">▣</div>
+        <div class="skill-category-name">WordPress</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Elementor</span>
+          <span class="skill-tag">Custom CSS</span>
+          <span class="skill-tag">Theme Configuration</span>
+          <span class="skill-tag">Core Web Vitals</span>
+          <span class="skill-tag">PHP Fundamentals</span>
+        </div>
+      </div>
+
+      <div class="skill-category reveal">
+        <div class="skill-category-icon">◉</div>
+        <div class="skill-category-name">Email and Marketing</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Klaviyo</span>
+          <span class="skill-tag">Welcome Sequences</span>
+          <span class="skill-tag">Abandoned Cart Flows</span>
+          <span class="skill-tag">Waitlist Signups</span>
+          <span class="skill-tag">Transactional Emails</span>
+        </div>
+      </div>
+
+      <div class="skill-category reveal">
+        <div class="skill-category-icon">⬢</div>
+        <div class="skill-category-name">Tools</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">GitHub</span>
+          <span class="skill-tag">VS Code</span>
+          <span class="skill-tag">Cursor</span>
+          <span class="skill-tag">Chrome DevTools</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Postman</span>
+          <span class="skill-tag">Terminal</span>
+        </div>
+      </div>
+
+      <div class="skill-category reveal">
+        <div class="skill-category-icon">△</div>
+        <div class="skill-category-name">Professional</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Client Communication</span>
+          <span class="skill-tag">Deadline Management</span>
+          <span class="skill-tag">Team Collaboration</span>
+          <span class="skill-tag">Code Review</span>
+          <span class="skill-tag">QA Testing</span>
+          <span class="skill-tag">Technical Documentation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROJECTS ==================== -->
+<section>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">04</div>
+      <h2 class="section-title">Projects</h2>
+    </div>
+
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-card-inner">
+          <div class="project-badge">Custom Theme Build</div>
+          <h3 class="project-name">PawReplay Custom Pet Wall Art Store</h3>
+          <p class="project-desc">Built a fully custom Online Store 2.0 theme from scratch with dynamic sections and metaobject-driven content and a JavaScript cart drawer that shortened the checkout process by 2 steps. Eliminated all third-party app dependencies and saved the client 100% of their monthly app subscription costs.</p>
+          <div class="project-tech">
+            <span>Liquid</span>
+            <span>Metaobjects</span>
+            <span>JavaScript</span>
+            <span>HTML5</span>
+            <span>CSS3</span>
+          </div>
+          <a href="https://pawreplay.com" class="project-link" target="_blank">
+            View Live Store
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-card-inner">
+          <div class="project-badge">Ecommerce Store</div>
+          <h3 class="project-name">Herban Hemp</h3>
+          <p class="project-desc">Developed a complete ecommerce store with mobile-first responsive design and metafield-powered product content and dynamic collection filtering across 50+ products.</p>
+          <div class="project-tech">
+            <span>Liquid</span>
+            <span>Online Store 2.0</span>
+            <span>JavaScript</span>
+            <span>CSS3</span>
+          </div>
+          <a href="https://herbanhemp.com" class="project-link" target="_blank">
+            View Live Store
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-card-inner">
+          <div class="project-badge">Landing Page</div>
+          <h3 class="project-name">DeVaultClub Premium Launch</h3>
+          <p class="project-desc">Designed and coded a premium landing page with waitlist functionality for a luxury brand launch. Integrated a Klaviyo welcome email flow that captured 500+ signups in the first month.</p>
+          <div class="project-tech">
+            <span>Shopify Liquid</span>
+            <span>JavaScript</span>
+            <span>CSS3</span>
+            <span>Klaviyo</span>
+          </div>
+          <a href="https://devaultclub.com" class="project-link" target="_blank">
+            View Live Store
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-card-inner">
+          <div class="project-badge">WordPress</div>
+          <h3 class="project-name">Eurofireplaces Website</h3>
+          <p class="project-desc">Constructed a WordPress website using Elementor with custom CSS overrides and a mobile-first layout. Scored 92 on Google PageSpeed Insights after optimization.</p>
+          <div class="project-tech">
+            <span>WordPress</span>
+            <span>Elementor</span>
+            <span>Custom CSS</span>
+            <span>Core Web Vitals</span>
+          </div>
+          <a href="https://ef.bje.as" class="project-link" target="_blank">
+            View Live Site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CERTIFICATIONS ==================== -->
+<section class="summary-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">05</div>
+      <h2 class="section-title">Certifications</h2>
+    </div>
+
+    <div class="cert-list">
+      <div class="cert-item reveal">
+        <div class="cert-icon">✦</div>
+        <div class="cert-text"><strong>Shopify Theme Development and Custom Store Builds</strong> — Production Certified at Softerra</div>
+      </div>
+      <div class="cert-item reveal">
+        <div class="cert-icon">✦</div>
+        <div class="cert-text"><strong>Shopify Online Store 2.0 Architecture and Liquid Templating</strong> — Applied in Production</div>
+      </div>
+      <div class="cert-item reveal">
+        <div class="cert-icon">✦</div>
+        <div class="cert-text"><strong>Responsive Web Design and Mobile-First Development</strong> — Applied in Production</div>
+      </div>
+      <div class="cert-item reveal">
+        <div class="cert-icon">✦</div>
+        <div class="cert-text"><strong>Git and GitHub Version Control</strong> — Applied in Collaborative Team Development</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EDUCATION ==================== -->
+<section>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-number">06</div>
+      <h2 class="section-title">Education</h2>
+    </div>
+    <div class="exp-item reveal">
+      <div class="exp-header">
+        <div class="exp-role">Secondary School Certificate (Matriculation)</div>
+        <div class="exp-dates">2023</div>
+      </div>
+      <div class="exp-company">Government High School Pakki Shah Mardan &middot; Mianwali</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-tagline reveal">Let's <span>build</span> something great.</div>
+    <p class="footer-sub reveal">Available immediately for full-time remote and on-site positions.</p>
+    <a href="mailto:awaishaiderkhan6@gmail.com" class="footer-cta reveal">
+      Get in Touch →
+    </a>
+    <div class="footer-bottom reveal">
+      Urdu (Native) &middot; English (Professional) &middot; Pakistan-Based &middot; No Visa Sponsorship Required
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Smooth parallax on hero
+  window.addEventListener('scroll', () => {
+    const hero = document.querySelector('.hero-content');
+    const scroll = window.scrollY;
+    if (scroll < window.innerHeight) {
+      hero.style.transform = `translateY(${scroll * 0.3}px)`;
+      hero.style.opacity = 1 - (scroll / window.innerHeight);
+    }
+  });
+</script>
+
+</body>
+</html>
